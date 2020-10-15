@@ -1,6 +1,8 @@
 # kyomucan
 
-### ruby
+ジョブカンの打刻修正の体験をなんとかする
+
+### howto
 
 ruby 2.7
 
