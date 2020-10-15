@@ -33,11 +33,15 @@ class DateConfig
   def initialize(date, start, finish)
     @date = Date.parse(date) # 出勤日
     @start = start || "10#{random_minute}" # 出勤時間
-    @finish = finish || "19#{random_minute}" # 退勤時間
+    @finish = finish || "20#{random_minute}" # 退勤時間
+    @start.tr!(":", "")
+    @finish.tr!(":", "")
   end
 
+  attr_reader :date, :start, :finish
+
   def to_s
-    "#{@date} : #{@start} ~ #{@finish}"
+    "#{date} : #{start} ~ #{finish}"
   end
 
   def random_minute
@@ -77,7 +81,7 @@ class Dakoku
   end
 
   def do_dakoku_day(date_config)
-    puts "#{date_config} start"
+    puts "#{date_config} start..."
 
     date = date_config.date
     visit jobcan_edit_path(year: date.year, month: date.month, day: date.day)
@@ -88,11 +92,8 @@ class Dakoku
       return
     end
 
-    sleep 5
-
     find("#ter_time").fill_in(with: date_config.start)
     find('textarea[name="notice"]').fill_in(with: 'fix')
-    return
     click_on '打刻'
 
     sleep 3
@@ -101,8 +102,8 @@ class Dakoku
     find('textarea[name="notice"]').fill_in(with: 'fix')
     click_on '打刻'
 
-    sleep 5
-    puts "#{date_config} finished"
+    sleep 3
+    puts "finished"
   end
 
   def jobcan_edit_path(year:, month:, day:)
@@ -126,9 +127,9 @@ puts "target"
 puts date_configs.map(&:to_s).join("\n")
 puts
 
-puts "start"
+puts "dakoku start"
 dakoku = Dakoku.new(date_configs)
 
 dakoku.execute
 
-puts "finished"
+puts "dakoku finished"
